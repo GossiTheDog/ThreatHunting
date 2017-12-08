@@ -3,6 +3,7 @@ I am publishing GPL v3 tools for hunting for threats in your organisations.
 
 # Nexthink modules
 Threat hunting - Potential malware downloads v1.0.xml 
+
 This is a report which shows all calls to internet domains from common malware document techniques.  Most endpoint malware - such as macros, Office exploits etc - use the same set of methods to download their payloads.
 
 The methods currently monitored include:
