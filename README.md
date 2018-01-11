@@ -13,6 +13,8 @@ The methods currently monitored include:
   - PowerShell
   - wscript/cscript
   - wmic
+  - sct remote calls
+  - InfDefaultInstall (Inf remote calls)
   
 The report will show domains.  You can change the report to show users, executables instead if you want, or investigate each domain 
 
