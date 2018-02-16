@@ -15,6 +15,7 @@ The methods currently monitored include:
   - wmic
   - sct remote calls
   - InfDefaultInstall (Inf remote calls)
+  - certutil
   
 The report will show domains.  You can change the report to show users, executables instead if you want, or investigate each domain 
 
