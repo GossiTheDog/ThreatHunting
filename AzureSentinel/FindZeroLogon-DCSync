@@ -1,7 +1,6 @@
 // FindZeroLogon-DCSync
 // Authors: 
 //@DebugPrivilege
-// & 
 //@GossiTheDog
 
 let timeframe = 7d;
