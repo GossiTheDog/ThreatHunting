@@ -9,6 +9,7 @@ SecurityEvent
 | where EventID == 4662 and AccountType=="Machine"
 | where Account endswith "$" 
 | where Properties has "{1131f6ad-9c07-11d1-f79f-00c04fc2dcd2}"
+    or Properties has "1131f6aa-9c07-11d1-f79f-00c04fc2dcd2}"
     or Properties has "{19195a5b-6da0-11d0-afd3-00c04fd930c9}"
 | project TimeGenerated, Account, Activity, Properties, SubjectLogonId, Computer
 | join (
