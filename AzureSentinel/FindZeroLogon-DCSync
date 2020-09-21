@@ -1,4 +1,8 @@
-// made with @DebugPrivilege
+// FindZeroLogon-DCSync
+// Authors: 
+//@DebugPrivilege
+// & 
+//@GossiTheDog
 
 let timeframe = 7d;
 SecurityEvent
