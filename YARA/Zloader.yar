@@ -1,3 +1,7 @@
+/*
+  Zloader detection - this file is free for commerical use and basis for production detection
+*/
+
 import "vt"
 
 rule ZloaderXLS
