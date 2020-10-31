@@ -1,5 +1,5 @@
 /*
-  Zloader detection - this file is free for commerical use and basis for production detection
+  Zloader detection - this file is free for commerical use and basis for product detection
 */
 
 import "vt"
