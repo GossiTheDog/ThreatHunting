@@ -1,5 +1,5 @@
 /*
-  BazaLoader - this file is free for commerical use and basis for production detection
+  BazaLoader - this file is free for commercial use and basis for production detection
 */
 
 import "vt"
