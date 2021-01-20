@@ -2,7 +2,7 @@
   Zloader detection - this file is free for commerical use and basis for product detection
 */
 
-import "vt"
+//import "vt"
 
 rule ZloaderXLS
 {
@@ -81,6 +81,14 @@ rule ZloaderDLLFancy
     $19 = {446C6C52656769737465725365727665724030}
     $20 = {496E7465726C6F636B656444656372656D656E74}
     $21 = {496E7465726C6F636B6564496E6372656D656E74}
+  condition:
+    all of them
+}
+
+rule ZloaderWord
+{
+  strings:
+    $0 = {3D170A6D23A3C814B363EAD1C976207D9A6D4D87CC2427276D04609ADD6102811789E92A3A7F25A96D3ACD2C129AC0E918BE3187E1A0B49C6C4446F11231B3F4}
   condition:
     all of them
 }
