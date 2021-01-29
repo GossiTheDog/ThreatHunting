@@ -24,8 +24,10 @@ condition:
   b.hostname contains "topserviceupd.com" or
   b.hostname contains "vaglassdoorsandwindowsrepair.com" or
   b.hostname contains "insideoutexprescarwash.com.com" or
-  b.hostname contains "fastchangeonlline.com"
-  )
+  b.hostname contains "fastchangeonlline.com" or
+  b.hostname contains "razcar-wash.com" or
+  b.hostname contains "forevercleandetaili.com"
+)
   and vt.metadata.new_file  
 )
 }
