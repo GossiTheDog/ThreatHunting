@@ -31,6 +31,29 @@ condition:
 )
 }
 
+rule SuspectBazaDomains {
+condition:
+(
+  for any b in vt.behaviour.dns_lookups : (
+  b.hostname contains "door-framesolutions.com" and
+  b.hostname contains "driveautoupdate.com" and
+  b.hostname contains "freightsexpressdelivery.com" and
+  b.hostname contains "gazeteaxpres.com" and
+  b.hostname contains "montgomeryglaspro.com" and
+  b.hostname contains "parcelabcstat.comm" and
+  b.hostname contains "resolutionplatform.com" and
+  b.hostname contains "scott-exteriors.com" and
+  b.hostname contains "secure-device-now.com" and
+  b.hostname contains "secure-phone-now.com" and
+  b.hostname contains "secure-system-now.com" and
+  b.hostname contains "service1elevate.com" and
+  b.hostname contains "servicessilverroomhotspot.com" and
+  b.hostname contains "thomasincoatings.com"
+  )
+  and vt.metadata.new_file  
+)
+}
+
 rule BazaMutex {
   condition:
     for any mutex in vt.behaviour.mutexes_created : (
