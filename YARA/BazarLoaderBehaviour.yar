@@ -89,7 +89,7 @@ rule BazaStrikeDroppy {
       file_dropped.path contains ".exe.Config"
     ) and
     for any file_dropped in vt.behaviour.files_dropped : (
-      file_dropped.path contains ".exe.1000.Config"
+      file_dropped.path contains ".exe.1000.Manifest"
     ) and
     uint16(0) == 0x5a4d and
     vt.metadata.new_file
