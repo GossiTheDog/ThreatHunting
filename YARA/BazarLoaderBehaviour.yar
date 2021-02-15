@@ -26,6 +26,7 @@ condition:
   b.hostname contains "insideoutexprescarwash.com.com" or
   b.hostname contains "fastchangeonlline.com" or
   b.hostname contains "razcar-wash.com" or
+  b.hostname contains "finderout.com" or
   b.hostname contains "forevercleandetaili.com"
 )
   and vt.metadata.new_file  
@@ -61,4 +62,20 @@ rule BazaMutex {
        mutex == "SIY4IE3YVC8G9E1P508ACR"
     )
     and vt.metadata.new_file
+}
+
+rule BazaLogo
+{
+condition:
+	uint16(0) == 0x5a4d and
+	vt.metadata.new_file and
+    vt.metadata.main_icon.dhash == "8c129252dac82482"
+}
+
+rule BazaLogo2
+{
+condition:
+	uint16(0) == 0x5a4d and
+	vt.metadata.new_file and
+    vt.metadata.main_icon.dhash == "4a929212dbc824c3"
 }
