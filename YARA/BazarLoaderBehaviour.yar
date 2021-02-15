@@ -79,3 +79,18 @@ condition:
 	vt.metadata.new_file and
     vt.metadata.main_icon.dhash == "4a929212dbc824c3"
 }
+
+rule BazaStrikeDroppy {
+  condition:
+    for any file_dropped in vt.behaviour.files_dropped : (
+      file_dropped.path contains "Downloads\\"
+    ) and
+    for any file_dropped in vt.behaviour.files_dropped : (
+      file_dropped.path contains ".exe.Config"
+    ) and
+    for any file_dropped in vt.behaviour.files_dropped : (
+      file_dropped.path contains ".exe.1000.Config"
+    ) and
+    uint16(0) == 0x5a4d and
+    vt.metadata.new_file
+}
