@@ -27,6 +27,7 @@ condition:
   b.hostname contains "fastchangeonlline.com" or
   b.hostname contains "razcar-wash.com" or
   b.hostname contains "finderout.com" or
+  b.hostname contains "trywd.com" or
   b.hostname contains "forevercleandetaili.com"
 )
   and vt.metadata.new_file  
