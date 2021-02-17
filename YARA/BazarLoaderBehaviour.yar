@@ -29,6 +29,8 @@ condition:
   b.hostname contains "finderout.com" or
   b.hostname contains "trywd.com" or
   b.hostname contains "laboratorer.com" or
+  b.hostname contains "lionpick.com" or
+  b.hostname contains "quickomni.com" or
   b.hostname contains "forevercleandetaili.com"
 )
   and vt.metadata.new_file  
@@ -80,6 +82,22 @@ condition:
 	uint16(0) == 0x5a4d and
 	vt.metadata.new_file and
     vt.metadata.main_icon.dhash == "4a929212dbc824c3"
+}
+
+rule BazaLogo3
+{
+condition:
+	uint16(0) == 0x5a4d and
+	vt.metadata.new_file and
+    vt.metadata.main_icon.dhash == "64e4c8d0f0e8d4d4"
+}
+
+rule BazaLogo4
+{
+condition:
+	uint16(0) == 0x5a4d and
+	vt.metadata.new_file and
+    vt.metadata.main_icon.dhash == "0c129212dbc82493"
 }
 
 rule BazaStrikeDroppy {
