@@ -1,0 +1,9 @@
+//originally by Olaf Hartong
+let serverlist=DeviceInfo| where DeviceType != "Workstation"
+| distinct DeviceId;let suspiciousdrivers=DeviceImageLoadEvents| where DeviceId in (serverlist)
+| where FolderPath startswith @"c:\windows\system32\spool\drivers"
+| distinct SHA1| invoke FileProfile(SHA1, 1000) | where GlobalPrevalence < 50 and IsRootSignerMicrosoft != 1 and SignatureState != "SignedValid";suspiciousdrivers
+| join kind=inner (DeviceImageLoadEvents| where DeviceId in (serverlist)
+| where FolderPath startswith @"c:\windows\system32\spool\drivers") on SHA1| where InitiatingProcessFileName != "ccmexec.exe"
+| where InitiatingProcessFileName == "spoolsv.exe"
+| project FolderPath, FileName, SHA256, SHA1, FileSize, GlobalPrevalence, GlobalFirstSeen, Timestamp, DeviceName, InitiatingProcessFolderPath
