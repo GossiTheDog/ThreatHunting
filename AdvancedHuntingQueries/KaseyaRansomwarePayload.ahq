@@ -1,0 +1,1 @@
+DeviceProcessEvents | where ProcessCommandLine contains @"c:\kworking\agent.exe"
