@@ -1,0 +1,3 @@
+DeviceProcessEvents
+| where FolderPath contains "kaseya" | where FileName == "AgentMon.exe"
+| project DeviceName, FileName, FolderPath, ProcessVersionInfoCompanyName, ProcessVersionInfoProductName, ProcessCommandLine, ProcessCreationTime, AccountDomain, AccountName, InitiatingProcessFileName
