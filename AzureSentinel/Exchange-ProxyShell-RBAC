@@ -1,0 +1,3 @@
+Event 
+| where Source == ```MSExchange RBAC```
+| where EventID == 23
