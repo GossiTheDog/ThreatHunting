@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where ProcessCommandLine contains "msdt.exe"| where InitiatingProcessFileName has_any (@"WINWORD.EXE", @"EXCEL.EXE", @"OUTLOOK.EXE")
