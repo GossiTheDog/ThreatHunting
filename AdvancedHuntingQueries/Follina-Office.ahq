@@ -1,2 +1,5 @@
+// Follina = area code 0438
+// Finds this activity https://twitter.com/GossiTheDog/status/1530844804061573120
+
 DeviceProcessEvents
 | where ProcessCommandLine contains "msdt.exe"| where InitiatingProcessFileName has_any (@"WINWORD.EXE", @"EXCEL.EXE", @"OUTLOOK.EXE")
