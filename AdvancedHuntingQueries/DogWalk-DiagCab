@@ -1,0 +1,5 @@
+// blog = https://blog.0patch.com/2022/06/microsoft-diagnostic-tools-dogwalk.html
+
+DeviceProcessEvents| where ProcessCommandLine contains @"msdt.exe"
+| where ProcessCommandLine contains "/cab"
+| where ProcessCommandLine contains ".diagcab"
