@@ -1,0 +1,9 @@
+DeviceFileEvents
+| where FileName has @"mpclient.dll"| where FolderPath !startswith @"C:\Windows\Temp\"| where FolderPath !startswith @"C:\ProgramData\Microsoft\Windows Defender\Platform\"
+| where FolderPath !startswith @"C:\Windows\ServiceProfiles\NetworkService\AppData\Local\Temp\"| where FolderPath !has @"\AppData\Local\Temp\"
+| where FolderPath !startswith @"C:\Windows\WinSxS\Temp\PendingRenames\" | where FolderPath != @"C:\Program Files\Windows Defender\MpClient.dll"| where FolderPath != @"C:\Program Files\Microsoft Security Client\MpClient.dll"
+| where FolderPath !endswith @"\Windows Defender\MpClient.dll"
+| where FolderPath !startswith @"\Device\HarddiskVolume"| where FolderPath !startswith @"C:\Windows\Installer\$PatchCache$\"
+| where FolderPath !startswith @"C:\Windows\WinSxS\"| where FolderPath !startswith @"C:\$WINDOWS.~BT\NewOS\"| where FolderPath !startswith @"C:\Windows\SystemTemp\"
+| where FolderPath !startswith @"C:\Windows\SoftwareDistribution\"| where FolderPath !startswith @"C:\Windows\CcmTemp\"| where FolderPath != @"C:\Program Files (x86)\Microsoft Security Client\MpClient.dll"
+| where FolderPath != @"C:\ProgramData\Microsoft\Windows Defender\Offline Scanner\MpClient.dll"
