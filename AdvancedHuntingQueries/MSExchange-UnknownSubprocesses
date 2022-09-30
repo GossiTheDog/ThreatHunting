@@ -1,0 +1,16 @@
+// Finds abnormal IIS subprocesses on Microsoft Exchange servers
+DeviceTvmSoftwareInventory
+| where SoftwareVendor contains "Microsoft"
+| where SoftwareName contains "exchange"
+| join DeviceProcessEvents on $left.DeviceId == $right.DeviceId
+| where InitiatingProcessParentFileName == "w3wp.exe"
+| where InitiatingProcessFileName != @"csc.exe"
+| where InitiatingProcessFileName != @"TranscodingService.exe"
+| where InitiatingProcessFileName != @"WerFault.exe"
+
+// Finds abnormal PowerShell Remoting processes on Microsoft Exchange servers
+DeviceTvmSoftwareInventory
+| where SoftwareVendor contains "Microsoft"
+| where SoftwareName contains "exchange"
+| join DeviceProcessEvents on $left.DeviceId == $right.DeviceId
+| where InitiatingProcessFileName == "wsmprovhost.exe"
