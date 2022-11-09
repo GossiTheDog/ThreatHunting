@@ -56,3 +56,12 @@ condition:
   for any a in vt.behaviour.ip_traffic : (a.destination_ip contains "130.0.233.178")
 )
 }
+
+rule SocGholish2022JSLoader
+{
+  strings:
+    $0 = "\\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\\]/,_0x"
+  condition:
+    vt.metadata.new_file
+    all of them
+}
