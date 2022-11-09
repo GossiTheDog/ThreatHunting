@@ -62,6 +62,6 @@ rule SocGholish2022JSLoader
   strings:
     $0 = "\\[object ((I|Ui)nt(8|16|32)|Float(32|64)|Uint8Clamped|Big(I|Ui)nt64)Array\\]/,_0x"
   condition:
-    vt.metadata.new_file
+    vt.metadata.new_file and
     all of them
 }
