@@ -1,2 +1,2 @@
 // Detects large .lnk files without a SHA
-DeviceProcessEvents | where SHA == "" | where FileName endswith ".lnk"
+DeviceProcessEvents | where SHA1 == "" | where FileName endswith ".lnk"
