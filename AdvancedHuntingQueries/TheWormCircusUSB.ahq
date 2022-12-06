@@ -4,4 +4,4 @@ DeviceFileEvents
 
 // Suspect network traffic from AVAST AV executable
 DeviceNetworkEvents
-| where InitiatingProcessVersionInfoFileDescription == @"Avast remediation exe" | where Remote != "127.0.0.1"
+| where InitiatingProcessVersionInfoFileDescription == @"Avast remediation exe" | where RemoteIP != "127.0.0.1"
