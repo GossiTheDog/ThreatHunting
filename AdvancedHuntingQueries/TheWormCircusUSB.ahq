@@ -1,3 +1,7 @@
 // Suspect file creation, possible USB worm for #TheWormCircus variant
 DeviceFileEvents
 | where ActionType == "FileCreated" | where FolderPath contains "RECYCLER.BIN"
+
+// Suspect network traffic from AVAST AV executable
+DeviceNetworkEvents
+| where InitiatingProcessVersionInfoFileDescription == @"Avast remediation exe" | where Remote != "127.0.0.1"
