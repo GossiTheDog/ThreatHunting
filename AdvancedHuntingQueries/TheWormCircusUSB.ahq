@@ -1,0 +1,3 @@
+// Suspect file creation, possible USB worm for #TheWormCircus variant
+DeviceFileEvents
+| where ActionType == "FileCreated" | where FolderPath contains "RECYCLER.BIN"
