@@ -5,3 +5,7 @@ DeviceFileEvents
 // Suspect network traffic from AVAST AV executable
 DeviceNetworkEvents
 | where InitiatingProcessVersionInfoFileDescription == @"Avast remediation exe" | where RemoteIP != "127.0.0.1"
+
+// Suspect file creation of LNK file on USB
+DeviceFileEvents
+| where ActionType == "FileCreated" | where FolderPath !startswith "C:" | where FileName == "USB DISK.lnk"
