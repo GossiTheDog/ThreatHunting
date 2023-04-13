@@ -1,0 +1,4 @@
+DeviceProcessEvents
+
+| where InitiatingProcessFileName in~ ("MQSVC.EXE")
+| where FileName !in~ ("conhost.exe","WerFault.exe")
