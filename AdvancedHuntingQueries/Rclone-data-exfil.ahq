@@ -1,0 +1,4 @@
+DeviceNetworkEvents
+| where InitiatingProcessVersionInfoProductName has "rclone"
+| where RemoteIPType != @"Loopback"
+| where RemoteIPType != @"Private"
