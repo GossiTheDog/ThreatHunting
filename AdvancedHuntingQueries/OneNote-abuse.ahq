@@ -2,7 +2,6 @@
 DeviceProcessEvents
 | where InitiatingProcessFileName in~ ("ONENOTE.EXE", "ONENOTEM.EXE")
 | where FileName in~ ("wscript.exe","mshta.exe", "cmd.exe","powershell.exe","hh.exe")
-//| where FileName !in~ ("msedge.exe","outlook.exe", "onenotem.exe", "FileCoAuth.exe", "onenote.exe", "acrord32.exe", "dw20.exe")
 
 // Look for .chm helper (hh) spawning subprocesses
 DeviceProcessEvents
