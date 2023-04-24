@@ -1,0 +1,5 @@
+SigninLogs
+| where parse_json(RiskEventTypes_V2) contains "Travel"
+| where parse_json(RiskEventTypes_V2) contains "unfamiliarFeatures"
+| where ResultType == "0"
+| where AppDisplayName == "OfficeHome"
