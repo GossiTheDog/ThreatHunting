@@ -1,0 +1,7 @@
+1)
+DeviceNetworkEvents
+| where RemoteUrl contains "argotunnel.com"
+
+2)
+DeviceNetworkEvents
+| where AdditionalFields contains "argotunnel.com"
