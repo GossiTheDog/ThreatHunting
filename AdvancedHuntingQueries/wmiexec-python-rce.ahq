@@ -1,0 +1,2 @@
+DeviceProcessEvents
+| where ProcessCommandLine contains @"wmiexec.py" 
