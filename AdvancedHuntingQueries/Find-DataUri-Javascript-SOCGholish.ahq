@@ -1,0 +1,7 @@
+DeviceFileEvents | where FileName endswith ".js"
+| where FileOriginUrl == "about:internet"
+
+// optional to exclude some potential FPs
+| where InitiatingProcessFileName != @"WinRAR.exe"
+| where InitiatingProcessFileName != @"7zFM.exe"
+| where InitiatingProcessFileName != @"explorer.exe"
