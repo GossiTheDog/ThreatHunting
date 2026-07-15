@@ -5,7 +5,6 @@ DeviceFileEvents
 | where FolderPath matches regex @"^[a-zA-Z]:\\[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" // GUID
 | where FileName in~ ("ntuser.dat", "usrclass.dat")
 | project TimeGenerated, DeviceName, ActionType, FolderPath, FileName, InitiatingProcessFileName, InitiatingProcessCommandLine
-
  
 // Detection 2 - LegacyHive modifies the user's "User Shell Folders" registry key to point to a virtual device path instead of a physical folder on disk.
 DeviceRegistryEvents
@@ -14,11 +13,9 @@ DeviceRegistryEvents
 | where RegistryValueData has @"\\.\globalroot" or RegistryValueData has @"\BaseNamedObjects" //should never happen
 | project TimeGenerated, DeviceName, RegistryKey, RegistryValueName, RegistryValueData, InitiatingProcessFileName, InitiatingProcessAccountName
 
- 
-
 // Detection 3 - LegacyHive loads offreg.dll (Offline Registry Library), which is not really used by standard user space applications -- especially outside of MS system installation, deployment, or configuration tools.
 DeviceImageLoadEvents
 | where FileName =~ "offreg.dll"
 | where not(InitiatingProcessFolderPath has_any(@"\System32\", @"\SysWOW64\", @"\WinSxS\"))
-| where not(InitiatingProcessFolderPath startswith "c:\\programdata\\microsoft\\windows defender")
+| where not(InitiatingProcessFolderPath startswith "c:\\programdata\\microsoft\\windows defender") // stop MDE detecting itself
 | project TimeGenerated, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine
