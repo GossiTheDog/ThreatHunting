@@ -1,33 +1,24 @@
 // Detections for LegacyHive exploitation by @GossiTheDog@cyberplace.social 
 
 // Detection 1 - This query looks for the creation of temporary GUID directories directly in the root of the system drive containing registry files, this is how LegacyHive stages.
-
 DeviceFileEvents
 | where FolderPath matches regex @"^[a-zA-Z]:\\[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$" // GUID
 | where FileName in~ ("ntuser.dat", "usrclass.dat")
 | project TimeGenerated, DeviceName, ActionType, FolderPath, FileName, InitiatingProcessFileName, InitiatingProcessCommandLine
 
+ 
 // Detection 2 - LegacyHive modifies the user's "User Shell Folders" registry key to point to a virtual device path instead of a physical folder on disk.
-
 DeviceRegistryEvents
 | where RegistryKey has @"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
 | where RegistryValueName in~ ("Local AppData", "AppData", "Cache", "Cookies", "History")
 | where RegistryValueData has @"\\.\globalroot" or RegistryValueData has @"\BaseNamedObjects" //should never happen
 | project TimeGenerated, DeviceName, RegistryKey, RegistryValueName, RegistryValueData, InitiatingProcessFileName, InitiatingProcessAccountName
 
-// Detection 3 - LegacyHive loads offreg.dll (Offline Registry Library), which is not really used by standard user space applications -- especially outside of MS system installation, deployment, or configuration tools.
+ 
 
-DeviceImageLoadsEvents
+// Detection 3 - LegacyHive loads offreg.dll (Offline Registry Library), which is not really used by standard user space applications -- especially outside of MS system installation, deployment, or configuration tools.
+DeviceImageLoadEvents
 | where FileName =~ "offreg.dll"
 | where not(InitiatingProcessFolderPath has_any(@"\System32\", @"\SysWOW64\", @"\WinSxS\"))
+| where not(InitiatingProcessFolderPath startswith "c:\\programdata\\microsoft\\windows defender")
 | project TimeGenerated, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine
-
-// Detection 4 - LegacyHive notes Notepad from svchost.exe after calling a secondary logon
-
-DeviceProcessEvents
-| where ProcessCommandLine has "notepad.exe" or FileName =~ "notepad.exe"
-// Checking for Suspended state flags if captured by EDR, or looking at rapid terminations
-| where InitiatingProcessParentFileName =~ "svchost.exe" // Secondary Logon runs via svchost
-| where ActionType == "ProcessCreated"
-) on $left.InitiatingProcessId == $right.ProcessId
-| project TimeGenerated, DeviceName, FileName, FolderPath, ProcessCommandLine, InitiatingProcessFileName, AccountName
