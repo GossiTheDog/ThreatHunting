@@ -2,39 +2,38 @@
 // T1562.001 - Impair Defenses: Disable or Modify Tools (Abusing EDR capabilities/remediation engine)
 // T1548 - Abuse Elevation Control Mechanism (Exploiting Object Symlinks / Junctions)
 
-// Detects non-Defender processes loading MpClient.dll
+// Detection 1 - Detects non-Defender processes loading MpClient.dll
 DeviceImageLoadEvents
-| where ImageLoaded endswith @"\MpClient.dll"
+| where ActionType == "ImageLoaded"
+| where FileName == "MpClient.dll"
 | where not(
-    FolderPath startswith @"C:\Program Files\Windows Defender\" or 
-    FolderPath startswith @"C:\ProgramData\Microsoft\Windows Defender\" or
-    FolderPath startswith @"C:\Windows\System32\"
+    InitiatingProcessFolderPath startswith @"C:\Program Files\Windows Defender\" or
+    InitiatingProcessFolderPath startswith @"C:\ProgramData\Microsoft\Windows Defender\" or
+    InitiatingProcessFolderPath startswith @"C:\Windows\System32\" or
+    InitiatingProcessFileName =~ "taniumclient.exe" or
+    InitiatingProcessParentFileName =~ "taniumclient.exe"
 )
-| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp) by DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, FolderPath, ImageLoaded
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp) by DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, FolderPath, FileName
 | extend HostCustomEntity = DeviceName, ProcessCustomEntity = InitiatingProcessFileName
 
-// Detects un-vetted processes loading the Windows Cloud Filter API
+// Detection 2 - Detects unvetted processes loading the Windows Cloud Filter API
 DeviceImageLoadEvents
-| where ImageLoaded endswith @"\cldapi.dll"
+| where ActionType == "ImageLoaded"
+| where FileName == "cldapi.dll"
 | where not(
     InitiatingProcessFolderPath startswith @"C:\Windows\System32\" or
     InitiatingProcessFolderPath startswith @"C:\Program Files\" or
     InitiatingProcessFolderPath startswith @"C:\Program Files (x86)\"
 )
-| project Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, ImageLoaded
+| project Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, FileName
 
-// Detects processes issuing calls to create Object Manager Symbolic Links (via Sysmon Event ID 17/18 if available, or Process Events)
-DeviceEvents
-| where ActionType in ("SymbolicLinkCreated", "JunctionCreated") or EventId in (17, 18)
-| where AdditionalFields contains @"\RPC Control\" or TargetFilename contains @"\RPC Control\"
-| project Timestamp, DeviceName, ActionType, InitiatingProcessFileName, InitiatingProcessCommandLine, FolderPath, TargetFilename
-
+// Detection 3 - Detects processes loading both MpClient and Cloud API within 5 minutes, shouldn't happen
 let mp_loads = DeviceImageLoadEvents
-| where ImageLoaded endswith @"\MpClient.dll"
+| where FileName == "MpClient.dll"
 | project MpTime = Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessId;
 
 let cld_loads = DeviceImageLoadEvents
-| where ImageLoaded endswith @"\cldapi.dll"
+| where FileName == "cldapi.dll"
 | project CldTime = Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessId;
 
 mp_loads
