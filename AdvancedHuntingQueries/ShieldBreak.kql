@@ -1,0 +1,43 @@
+// Detections for ShieldBreak
+// T1562.001 - Impair Defenses: Disable or Modify Tools (Abusing EDR capabilities/remediation engine)
+// T1548 - Abuse Elevation Control Mechanism (Exploiting Object Symlinks / Junctions)
+
+// Detects non-Defender processes loading MpClient.dll
+DeviceImageLoadEvents
+| where ImageLoaded endswith @"\MpClient.dll"
+| where not(
+    FolderPath startswith @"C:\Program Files\Windows Defender\" or 
+    FolderPath startswith @"C:\ProgramData\Microsoft\Windows Defender\" or
+    FolderPath startswith @"C:\Windows\System32\"
+)
+| summarize FirstSeen = min(Timestamp), LastSeen = max(Timestamp) by DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, FolderPath, ImageLoaded
+| extend HostCustomEntity = DeviceName, ProcessCustomEntity = InitiatingProcessFileName
+
+// Detects un-vetted processes loading the Windows Cloud Filter API
+DeviceImageLoadEvents
+| where ImageLoaded endswith @"\cldapi.dll"
+| where not(
+    InitiatingProcessFolderPath startswith @"C:\Windows\System32\" or
+    InitiatingProcessFolderPath startswith @"C:\Program Files\" or
+    InitiatingProcessFolderPath startswith @"C:\Program Files (x86)\"
+)
+| project Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessCommandLine, ImageLoaded
+
+// Detects processes issuing calls to create Object Manager Symbolic Links (via Sysmon Event ID 17/18 if available, or Process Events)
+DeviceEvents
+| where ActionType in ("SymbolicLinkCreated", "JunctionCreated") or EventId in (17, 18)
+| where AdditionalFields contains @"\RPC Control\" or TargetFilename contains @"\RPC Control\"
+| project Timestamp, DeviceName, ActionType, InitiatingProcessFileName, InitiatingProcessCommandLine, FolderPath, TargetFilename
+
+let mp_loads = DeviceImageLoadEvents
+| where ImageLoaded endswith @"\MpClient.dll"
+| project MpTime = Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessId;
+
+let cld_loads = DeviceImageLoadEvents
+| where ImageLoaded endswith @"\cldapi.dll"
+| project CldTime = Timestamp, DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, InitiatingProcessId;
+
+mp_loads
+| join kind=inner cld_loads on DeviceName, InitiatingProcessId
+| where abs(datetime_diff('minute', MpTime, CldTime)) < 5
+| project DeviceName, InitiatingProcessFileName, InitiatingProcessFolderPath, MpTime, CldTime, InitiatingProcessId
