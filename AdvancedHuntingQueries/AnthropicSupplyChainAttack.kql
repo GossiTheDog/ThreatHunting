@@ -1,0 +1,86 @@
+// Known malicious IP
+DeviceNetworkEvents
+| where RemoteIP == "134.209.82.225"
+| project Timestamp,
+          DeviceName,
+          InitiatingProcessFileName,
+          InitiatingProcessCommandLine,
+          LocalIP,
+          RemoteIP,
+          RemotePort,
+          Protocol
+| order by Timestamp desc
+
+// Known malicious extension
+DeviceProcessEvents
+| where ProcessCommandLine has_any (
+    "anthropic.claude-code",
+    "Claude Code",
+    "2.1.313"
+)
+| project Timestamp,
+          DeviceName,
+          InitiatingProcessFileName,
+          ProcessCommandLine
+
+// VSCode and Cursor spawning SSH
+DeviceProcessEvents
+| where InitiatingProcessFileName in~ (
+    "Code.exe",
+    "Cursor.exe",
+    "code",
+    "cursor"
+)
+| where FileName in~ (
+    "ssh",
+    "ssh.exe",
+    "autossh"
+)
+| project Timestamp,
+          DeviceName,
+          InitiatingProcessFileName,
+          FileName,
+          ProcessCommandLine
+ 
+// Recon activity
+DeviceProcessEvents
+| where ProcessCommandLine contains "git config --global user.email"
+   or ProcessCommandLine contains "ifconfig.me"
+   or ProcessCommandLine contains "api.ipify.org"
+| project Timestamp,
+          DeviceName,
+          FileName,
+          ProcessCommandLine
+
+// Umbongo
+union
+(
+    DeviceNetworkEvents
+    | where RemoteIP == "134.209.82.225"
+),
+(
+    DeviceFileEvents
+    | where FileName in~ (
+        ".smt",
+        ".smtk",
+        "sysmon.cmd",
+        "smt.cmd",
+        "com.apple.sysmond.plist"
+    )
+),
+(
+    DeviceFileEvents
+    | where FileName startswith ".stk_"
+),
+(
+    DeviceProcessEvents
+    | where ProcessCommandLine has_any (
+        "svc-telemetry",
+        "localhost:22",
+        "ifconfig.me",
+        "api.ipify.org",
+        "anthropic.claude-code",
+        "2.1.313"
+    )
+)
+| order by Timestamp desc
