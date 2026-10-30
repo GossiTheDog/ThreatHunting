@@ -11,17 +11,41 @@ DeviceNetworkEvents
           Protocol
 | order by Timestamp desc
 
-// Known malicious extension
+// Claude Code extension
 DeviceProcessEvents
 | where ProcessCommandLine has_any (
     "anthropic.claude-code",
-    "Claude Code",
     "2.1.313"
 )
 | project Timestamp,
           DeviceName,
           InitiatingProcessFileName,
           ProcessCommandLine
+
+// Specific malicious version
+union isfuzzy=true
+(
+    DeviceFileEvents
+    | where FolderPath has "anthropic.claude-code-2.1.313"
+),
+(
+    DeviceProcessEvents
+    | where ProcessCommandLine has "2.1.313"
+),
+(
+    DeviceRegistryEvents
+    | where RegistryValueData has "2.1.313"
+)
+| project Timestamp,
+          DeviceName,
+          Type,
+          ActionType,
+          FileName,
+          FolderPath,
+          ProcessCommandLine,
+          RegistryValueData
+| order by Timestamp desc
+
 
 // VSCode and Cursor spawning SSH
 DeviceProcessEvents
