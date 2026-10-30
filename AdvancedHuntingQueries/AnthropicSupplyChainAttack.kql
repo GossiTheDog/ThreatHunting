@@ -1,4 +1,4 @@
-// Known malicious IP
+// Known malicious IP -- high fidelity
 DeviceNetworkEvents
 | where RemoteIP == "134.209.82.225"
 | project Timestamp,
@@ -11,7 +11,7 @@ DeviceNetworkEvents
           Protocol
 | order by Timestamp desc
 
-// Claude Code extension
+// Claude Code extension -- low fidelity
 DeviceProcessEvents
 | where ProcessCommandLine has_any (
     "anthropic.claude-code",
@@ -22,7 +22,19 @@ DeviceProcessEvents
           InitiatingProcessFileName,
           ProcessCommandLine
 
-// Specific malicious version
+// Any extension usage -- low fidelity
+DeviceFileEvents
+| where FolderPath has_any (
+    ".cursor",
+    ".vscode"
+)
+| where FolderPath has "anthropic.claude-code"
+| summarize
+    FirstSeen=min(Timestamp),
+    LastSeen=max(Timestamp)
+    by DeviceName, FolderPath
+
+// Specific malicious version -- high fidelity
 union isfuzzy=true
 (
     DeviceFileEvents
@@ -47,7 +59,7 @@ union isfuzzy=true
 | order by Timestamp desc
 
 
-// VSCode and Cursor spawning SSH
+// VSCode and Cursor spawning SSH -- medium fidelity
 DeviceProcessEvents
 | where InitiatingProcessFileName in~ (
     "Code.exe",
@@ -66,7 +78,7 @@ DeviceProcessEvents
           FileName,
           ProcessCommandLine
  
-// Recon activity
+// Recon activity -- medium fidelity
 DeviceProcessEvents
 | where ProcessCommandLine contains "git config --global user.email"
    or ProcessCommandLine contains "ifconfig.me"
@@ -76,7 +88,7 @@ DeviceProcessEvents
           FileName,
           ProcessCommandLine
 
-// Umbongo
+// Umbongo -- Is it because I sang the Kia-Ora advert? I remember that. It's too orangey for crows.
 union
 (
     DeviceNetworkEvents
